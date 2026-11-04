@@ -28,7 +28,7 @@ public class AuthService {
   private final GoogleIdTokenVerifier verifier;
 
   public AuthService(UserRepository userRepository, JwtService jwtService,
-      @Value("${app.google.clientId}") String clientId) {
+      @Value("${app.google.client-id}") String clientId) {
     this.userRepository = userRepository;
     this.jwtService = jwtService;
     this.verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), GsonFactory.getDefaultInstance())
@@ -41,7 +41,7 @@ public class AuthService {
     GoogleIdToken idToken;
     try {
       idToken = verifier.verify(idTokenString);
-    } catch (GeneralSecurityException | IOException e) {
+    } catch (GeneralSecurityException | IOException | IllegalArgumentException e) {
       throw new UnauthorizedException("Invalid Google ID token.");
     }
     if (idToken == null) {
