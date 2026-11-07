@@ -42,10 +42,10 @@ public class AuthService {
     try {
       idToken = verifier.verify(idTokenString);
     } catch (GeneralSecurityException | IOException | IllegalArgumentException e) {
-      throw new UnauthorizedException("Invalid Google ID token.");
+      throw new UnauthorizedException("No se pudo verificar el token de Google");
     }
     if (idToken == null) {
-      throw new UnauthorizedException("Invalid Google ID token.");
+      throw new UnauthorizedException("Token de Google inválido");
     }
 
     GoogleIdToken.Payload p = idToken.getPayload();
@@ -54,12 +54,10 @@ public class AuthService {
         p.getEmail(),
         (String) p.get("name"),
         (String) p.get("picture"));
-    return new LoginResponse(jwtService.createToken(user.getId()), UserDto.fromUser(user));
-
+    return new LoginResponse(jwtService.createToken(user.getId()), UserDto.from(user));
   }
 
   private User upsertUser(String sub, String email, String name, String picture) {
-
     User user = userRepository.findByGoogleSub(sub).orElseGet(() -> {
       User newUser = new User();
       newUser.setGoogleSub(sub);
@@ -67,28 +65,26 @@ public class AuthService {
       newUser.setName(name);
       newUser.setPictureUrl(picture);
       newUser.setCreatedAt(Instant.now());
-      return userRepository.save(newUser);
+      return newUser;
     });
-    return user;
+
+    user.setEmail(email);
+    user.setName(name);
+    user.setPictureUrl(picture);
+    return userRepository.save(user);
   }
 
+  @Transactional(readOnly = true)
   public UserDto getUser(Long userId) {
     User user = userRepository.findById(userId)
-        .orElseThrow(() -> new NotFoundException("User not found."));
-    return UserDto.fromUser(user);
+        .orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
+    return UserDto.from(user);
   }
 
+  @Transactional
   public LoginResponse devLogin() {
-    User user = userRepository.findByGoogleSub("dev-user").orElseGet(() -> {
-      User newUser = new User();
-      newUser.setGoogleSub("dev-user");
-      newUser.setEmail("dev@immersionhub.com");
-      newUser.setName("Developer User");
-      newUser.setPictureUrl("https://example.com/dev-avatar.jpg");
-      newUser.setCreatedAt(Instant.now());
-      return userRepository.save(newUser);
-    });
-    return new LoginResponse(jwtService.createToken(user.getId()), UserDto.fromUser(user));
+    User user = upsertUser("dev-user", "dev@local", "Dev User", null);
+    return new LoginResponse(jwtService.createToken(user.getId()), UserDto.from(user));
   }
 
 }

@@ -30,6 +30,7 @@ public class UserSettings {
   @Column(name = "native_lang", nullable = false)
   private String nativeLang = "es";
 
-  private boolean pauseWordClick = true;
+  @Column(name = "pause_word_click", nullable = false)
+  private boolean pauseOnWordClick = true;
 
 }
