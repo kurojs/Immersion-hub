@@ -38,7 +38,7 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ErrorDto> handleGenericException(Exception e) {
-    return build(HttpStatus.INTERNAL_SERVER_ERROR, "Error interno");
+    return build(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error");
   }
 
   private ResponseEntity<ErrorDto> build(HttpStatus status, String message) {

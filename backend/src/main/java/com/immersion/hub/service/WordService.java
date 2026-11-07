@@ -35,7 +35,7 @@ public class WordService {
     Content content = null;
     if (req.contentId() != null) {
       content = contentRepository.findByIdAndUserId(req.contentId(), userId)
-          .orElseThrow(() -> new NotFoundException("Contenido no encontrado"));
+          .orElseThrow(() -> new NotFoundException("Content not found"));
     }
 
     SavedWord w = new SavedWord();
@@ -63,7 +63,7 @@ public class WordService {
   @Transactional
   public void delete(Long id, Long userId) {
     SavedWord w = savedWordRepository.findByIdAndUserId(id, userId)
-        .orElseThrow(() -> new NotFoundException("Palabra no encontrada"));
+        .orElseThrow(() -> new NotFoundException("Saved word not found"));
     savedWordRepository.delete(w);
   }
 }

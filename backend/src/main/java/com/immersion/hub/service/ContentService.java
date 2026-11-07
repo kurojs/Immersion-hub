@@ -53,7 +53,7 @@ public class ContentService {
     if (req.type() == ContentType.MEDIA_URL) {
       String url = req.sourceUrl();
       if (url == null || !(url.startsWith("http://") || url.startsWith("https://"))) {
-        throw new BadRequestException("Para un enlace necesitas una URL http o https");
+        throw new BadRequestException("sourceUrl is required and must start with http:// or https://");
       }
     }
 
@@ -76,14 +76,14 @@ public class ContentService {
   @Transactional(readOnly = true)
   public ContentDto get(Long userId, Long contentId) {
     Content c = contentRepository.findByIdAndUserId(contentId, userId)
-        .orElseThrow(() -> new NotFoundException("Contenido no encontrado"));
+        .orElseThrow(() -> new NotFoundException("Content not found"));
     return ContentDto.from(c, cueRepository.countByContentId(c.getId()));
   }
 
   @Transactional
   public void delete(Long userId, Long contentId) {
     Content c = contentRepository.findByIdAndUserId(contentId, userId)
-        .orElseThrow(() -> new NotFoundException("Contenido no encontrado"));
+        .orElseThrow(() -> new NotFoundException("Content not found"));
     cueTranslationRepository.deleteByCueContentId(c.getId());
     savedWordRepository.detachContent(c.getId());
     cueRepository.deleteByContentId(c.getId());
@@ -93,7 +93,7 @@ public class ContentService {
   @Transactional(readOnly = true)
   public List<CueDto> listCues(Long userId, Long contentId, String lang) {
     Content c = contentRepository.findByIdAndUserId(contentId, userId)
-        .orElseThrow(() -> new NotFoundException("Contenido no encontrado"));
+        .orElseThrow(() -> new NotFoundException("Content not found"));
 
     Map<Long, String> translationMap = cueTranslationRepository
         .findByCueContentIdAndLang(c.getId(), lang).stream()

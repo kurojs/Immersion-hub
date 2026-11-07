@@ -42,13 +42,13 @@ public class SubtitleService {
   @Transactional
   public int importSubtitles(Long contentId, Long userId, MultipartFile file) {
     Content content = contentRepository.findByIdAndUserId(contentId, userId)
-        .orElseThrow(() -> new NotFoundException("Contenido no encontrado"));
+        .orElseThrow(() -> new NotFoundException("Content not found"));
 
     String text;
     try {
       text = new String(file.getBytes(), StandardCharsets.UTF_8);
     } catch (IOException e) {
-      throw new BadRequestException("No se pudo leer el archivo");
+      throw new BadRequestException("Could not read the uploaded file");
     }
 
     String name = file.getOriginalFilename() == null ? ""
@@ -60,12 +60,12 @@ public class SubtitleService {
     } else if (name.endsWith(".ass")) {
       parser = assParser;
     } else {
-      throw new BadRequestException("Solo .srt o .ass");
+      throw new BadRequestException("Only .srt or .ass files are supported");
     }
 
     List<ParsedCue> parsed = parser.parse(text);
     if (parsed.isEmpty()) {
-      throw new BadRequestException("No se encontraron subtítulos");
+      throw new BadRequestException("No subtitles found in the file");
     }
 
     cueRepository.deleteByContentId(contentId);

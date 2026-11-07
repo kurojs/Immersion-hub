@@ -40,10 +40,10 @@ public class TranslationService {
   @Transactional
   public int translateContent(Long contentId, Long userId, String lang) {
     contentRepository.findByIdAndUserId(contentId, userId)
-        .orElseThrow(() -> new NotFoundException("Contenido no encontrado"));
+        .orElseThrow(() -> new NotFoundException("Content not found"));
 
     if (lang == null || !lang.matches("^[a-z]{2}(-[A-Za-z]{2,4})?$")) {
-      throw new BadRequestException("Código de idioma inválido: " + lang);
+      throw new BadRequestException("Invalid language code: " + lang);
     }
 
     List<Cue> cues = cueRepository.findByContentIdOrderByOrderIndex(contentId);

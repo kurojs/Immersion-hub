@@ -42,7 +42,6 @@ public class AssParser implements SubtitleParser {
     return result;
   }
 
-  // "0:00:01.50" -> 1500 (las centésimas se multiplican por 10)
   private long toMs(String t) {
     String[] p = t.trim().replace(',', '.').split("[:.]");
     long h = Long.parseLong(p[0]);

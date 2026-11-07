@@ -43,7 +43,7 @@ public class GoogleTranslationProvider implements TranslationProvider {
           .map(Res.Translation::translatedText)
           .toList();
     } catch (Exception e) {
-      throw new BadRequestException("No se pudo traducir. Revisa tu clave de Google.");
+      throw new BadRequestException("Could not translate. Check your Google API key.");
     }
   }
 }

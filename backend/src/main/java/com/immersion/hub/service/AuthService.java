@@ -42,10 +42,10 @@ public class AuthService {
     try {
       idToken = verifier.verify(idTokenString);
     } catch (GeneralSecurityException | IOException | IllegalArgumentException e) {
-      throw new UnauthorizedException("No se pudo verificar el token de Google");
+      throw new UnauthorizedException("Could not verify the Google token");
     }
     if (idToken == null) {
-      throw new UnauthorizedException("Token de Google inválido");
+      throw new UnauthorizedException("Invalid Google ID token");
     }
 
     GoogleIdToken.Payload p = idToken.getPayload();
@@ -77,7 +77,7 @@ public class AuthService {
   @Transactional(readOnly = true)
   public UserDto getUser(Long userId) {
     User user = userRepository.findById(userId)
-        .orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
+        .orElseThrow(() -> new NotFoundException("User not found"));
     return UserDto.from(user);
   }
 
