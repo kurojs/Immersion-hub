@@ -33,12 +33,12 @@ class AssParserTest {
 
   @Test
   void keepsCommasInsideText() {
-    String ass = "Dialogue: 0,0:00:01.00,0:00:02.00,Default,,0,0,0,,Hola, mundo, adiós";
+    String ass = "Dialogue: 0,0:00:01.00,0:00:02.00,Default,,0,0,0,,Hello, world, goodbye";
 
     List<ParsedCue> cues = new AssParser().parse(ass);
 
     assertEquals(1, cues.size());
-    assertEquals("Hola, mundo, adiós", cues.get(0).text());
+    assertEquals("Hello, world, goodbye", cues.get(0).text());
   }
 
   @Test
