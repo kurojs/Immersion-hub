@@ -17,7 +17,7 @@ export default function Layout() {
       <aside className="flex w-56 flex-col gap-1 border-r border-white/10 p-4">
         <h2 className="mb-4 text-lg font-bold">Immersion Hub</h2>
 
-        <NavLink to="/" className={linkClass}>
+        <NavLink to="/" end className={linkClass}>
           <Film size={18} />
           <span>Library</span>
         </NavLink>
